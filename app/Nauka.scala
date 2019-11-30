@@ -42,13 +42,12 @@ object Nauka {
 
     for {
       turn <-0 until 10
-      println("New Turn"+turn)
       e<-entities
     }
     {
       e match  {
         case doer:Doer => doer.doThing()
-        case _ => println(e.id)
+        case _ => println(e.getClass())
       }
     }
   }
