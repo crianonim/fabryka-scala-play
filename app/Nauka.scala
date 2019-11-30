@@ -6,17 +6,25 @@ class Entity(){
 trait Doer {
   def doThing():Unit
 }
-case class Item(name:String,amount:Int)
+case class Item(name:String,var amount:Int)
 trait Producer {
   val output:Item
 }
-case class Inventory(var slots:mutable.ArraySeq[Item]=mutable.ArraySeq.empty[Item]);
+case class Inventory( slots:mutable.ArrayBuffer[Item]=mutable.ArrayBuffer.empty[Item]){
+  def addItem(item: Item)={
+      slots.find(_.name==item.name) match {
+        case Some(i)=> i.amount+=item.amount
+        case None =>  slots.append(item.copy())
+      }
+
+  }
+};
 case class Decoration() extends  Entity
-case class Miner() extends Entity with Producer with Doer {
+case class Miner(output:Item) extends Entity with Producer with Doer {
   val outputSlots=Inventory()
-  val output=Item("ore",1)
   def doThing()={
-    outputSlots.slots=outputSlots.slots :+ output
+    outputSlots.addItem(output.copy())
+
     println("Mining: "+output+" with "+this.id+" slots: "+outputSlots)
   }
 }
@@ -30,13 +38,18 @@ object Entity {
 }
 object Nauka {
   def main(args:Array[String]):Unit={
-    val entities=List(Miner(),Decoration())
-    for (e<-entities){
+    val entities=List(Miner(Item("IronOre",1)),Decoration(),Miner(Item("CopperOre",2)))
+
+    for {
+      _<-0 until 10
+      e<-entities
+
+    }
+    {
       e match  {
         case doer:Doer => doer.doThing()
         case _ => println(e.id)
       }
     }
-    println("Dziala")
   }
 }
