@@ -41,9 +41,9 @@ object Nauka {
     val entities=List(Miner(Item("IronOre",1)),Decoration(),Miner(Item("CopperOre",2)))
 
     for {
-      _<-0 until 10
+      turn <-0 until 10
+      println("New Turn"+turn)
       e<-entities
-
     }
     {
       e match  {
